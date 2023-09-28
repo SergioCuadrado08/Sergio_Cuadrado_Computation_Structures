@@ -31,8 +31,10 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
+uint8_t Rx_data[10];
 /* USER CODE END PD */
+
+
 
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN PM */
@@ -62,7 +64,11 @@ int _write(int file, char *ptr, int len)
   return len;
 }
 /* USER CODE END 0 */
-
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{
+	HAL_GPIO_TogglePin(GPIOA,GPIO_PIN_5); // Cambiar de estado el led
+	HAL_UART_Receive_IT(&huart2,Rx_data,4);
+}
 /**
   * @brief  The application entry point.
   * @retval int
@@ -93,11 +99,10 @@ int main(void)
   MX_GPIO_Init();
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
-
+  for (uint8_t idx = 0; idx <= 0x0F; idx++)
+	     printf("IDX: 0x%02X\r\n", idx);
   /* USER CODE END 2 */
- for (uint8_t idx = 0; idx <= 0x0F; idx++)
-	 printf("IDX: 0x%02X\r\n", idx);
-
+HAL_UART_Receive_IT(&huart2,Rx_data,4);
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
